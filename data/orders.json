@@ -1,0 +1,60 @@
+[
+  {
+    "id": "JB-27672",
+    "timestamp": "2026-06-27T06:58:31.627Z",
+    "buyer": "Guest Operator",
+    "items": [
+      {
+        "name": "AMD Radeon RX 7900 XTX",
+        "qty": 1,
+        "totalPaid": 929.99
+      }
+    ],
+    "grandTotal": 1004.3892000000001
+  },
+  {
+    "id": "JB-73214",
+    "timestamp": "2026-06-27T06:58:55.973Z",
+    "buyer": "Guest Operator",
+    "items": [
+      {
+        "name": "64GB G.Skill Trident Z5 RAM",
+        "qty": 1,
+        "totalPaid": 214.99
+      }
+    ],
+    "grandTotal": 232.1892
+  },
+  {
+    "id": "JB-28454",
+    "timestamp": "2026-06-27T07:04:17.011Z",
+    "buyer": "jayvee",
+    "items": [
+      {
+        "name": "64GB G.Skill Trident Z5 RAM",
+        "qty": 1
+      }
+    ],
+    "grandTotal": 232.1892
+  },
+  {
+    "id": "JB-PH-25373",
+    "timestamp": "2026-06-27T07:17:56.803Z",
+    "buyer": "Guest Operator",
+    "items": [
+      {
+        "name": "ASUS Dual GeForce RTX 4070 Ti Super OC 16GB",
+        "qty": 1
+      },
+      {
+        "name": "MSI Ventus 2X GeForce RTX 4060 Ti 8GB",
+        "qty": 1
+      },
+      {
+        "name": "Sapphire NITRO+ AMD Radeon RX 7900 XTX 24GB",
+        "qty": 1
+      }
+    ],
+    "grandTotal": 156384
+  }
+]

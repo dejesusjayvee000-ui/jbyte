@@ -1,0 +1,162 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PH PC Build Planner & Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0b0f19; font-family: system-ui, sans-serif; }
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    </style>
+</head>
+<body class="text-gray-100 min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+ <nav class="bg-slate-900 border-b border-slate-800 px-8 py-4 flex justify-between items-center sticky top-0 z-50">
+    <div class="flex items-center gap-8">
+        <h2 class="text-xl font-black tracking-tight text-blue-400 cursor-pointer" onclick="showPage('home')">JBYTE</h2>
+        <div class="flex gap-6 text-sm font-semibold text-gray-300">
+            <button onclick="showPage('home')" class="hover:text-blue-400 transition-all">Component Explorer</button>
+            <button onclick="showPage('guide')" class="hover:text-blue-400 transition-all">📋 Pre-made Blueprints</button>
+        </div>
+    </div>
+...
+
+        <div class="flex items-center gap-4">
+            <div class="text-right">
+                <p class="text-xs text-gray-400">Account status:</p>
+                <p id="user-display-status" class="text-sm font-bold text-white">Guest Operator</p>
+            </div>
+            <button onclick="showPage('auth')" id="auth-nav-btn" class="px-4 py-1.5 bg-blue-500 hover:bg-blue-400 text-slate-950 font-bold rounded-lg text-xs transition-all">
+                Login / Signup
+            </button>
+        </div>
+    </nav>
+
+    <!-- MAIN HOMEPAGE WORKSPACE -->
+    <div id="page-home" class="page-view flex flex-1 overflow-hidden">
+        <main class="flex-1 p-6 overflow-y-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div class="flex flex-wrap gap-1.5">
+                    <button onclick="filterCategory('all')" class="cat-btn px-3 py-1.5 bg-blue-500 text-slate-950 font-bold rounded-lg text-xs transition-all">ALL</button>
+                    <button onclick="filterCategory('GPU')" class="cat-btn px-3 py-1.5 bg-slate-800 text-gray-300 font-medium rounded-lg text-xs hover:bg-slate-700 transition-all">GPUs</button>
+                    <button onclick="filterCategory('CPU')" class="cat-btn px-3 py-1.5 bg-slate-800 text-gray-300 font-medium rounded-lg text-xs hover:bg-slate-700 transition-all">CPUs</button>
+                    <button onclick="filterCategory('Motherboard')" class="cat-btn px-3 py-1.5 bg-slate-800 text-gray-300 font-medium rounded-lg text-xs hover:bg-slate-700 transition-all">Boards</button>
+                    <button onclick="filterCategory('RAM')" class="cat-btn px-3 py-1.5 bg-slate-800 text-gray-300 font-medium rounded-lg text-xs hover:bg-slate-700 transition-all">RAM</button>
+                    <button onclick="filterCategory('Storage')" class="cat-btn px-3 py-1.5 bg-slate-800 text-gray-300 font-medium rounded-lg text-xs hover:bg-slate-700 transition-all">Storage</button>
+                    <button onclick="filterCategory('Cooling')" class="cat-btn px-3 py-1.5 bg-slate-800 text-gray-300 font-medium rounded-lg text-xs hover:bg-slate-700 transition-all">Cooling</button>
+                    <button onclick="filterCategory('Power Supply')" class="cat-btn px-3 py-1.5 bg-slate-800 text-gray-300 font-medium rounded-lg text-xs hover:bg-slate-700 transition-all">PSUs</button>
+                    <button onclick="filterCategory('Case')" class="cat-btn px-3 py-1.5 bg-slate-800 text-gray-300 font-medium rounded-lg text-xs hover:bg-slate-700 transition-all">Cases</button>
+                    <button onclick="filterCategory('Peripherals')" class="cat-btn px-3 py-1.5 bg-slate-800 text-gray-300 font-medium rounded-lg text-xs hover:bg-slate-700 transition-all">Peripherals</button>
+                </div>
+                <input type="text" id="searchBar" onkeyup="filterProducts()" placeholder="Search components..." class="w-full md:w-64 bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-blue-500">
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4" id="products-grid"></div>
+        </main>
+
+        <!-- Right Sidebar (Custom Build Panel) -->
+        <aside class="w-80 bg-slate-900 border-l border-slate-800 p-5 flex flex-col justify-between">
+            <div class="space-y-4">
+                <h3 class="text-sm font-bold border-b border-slate-800 pb-2 text-blue-400 uppercase tracking-wider">Your Build Configuration</h3>
+                
+                <!-- Live Build Helper Box -->
+                <div class="bg-slate-950 border-l-4 border-amber-500 p-3 rounded-r-xl">
+                    <p class="text-[10px] font-bold text-amber-400 uppercase tracking-widest mb-0.5">💡 Build Helper Tips</p>
+                    <p id="blueprint-tips" class="text-xs text-gray-300 leading-relaxed">Add parts to your layout. Our helper will automatically verify setup balance.</p>
+                </div>
+
+                <div id="build-list-container" class="space-y-2 max-h-[45vh] overflow-y-auto pr-1">
+                    <p class="text-gray-500 text-xs text-center py-12">No components mapped. Click parts to add them here.</p>
+                </div>
+            </div>
+
+            <div class="border-t border-slate-800 pt-4 space-y-4">
+                <div class="flex justify-between items-center font-black text-base text-white">
+                    <span>Estimated Cost:</span>
+                    <span id="build-total-price" class="text-blue-400 font-mono text-lg">₱0.00</span>
+                </div>
+                <button onclick="generatePrintableQuote()" class="w-full py-2.5 bg-blue-500 hover:bg-blue-400 text-slate-950 font-bold rounded-lg text-xs transition-all tracking-wide uppercase">
+                    📄 Generate Price Quote Layout
+                </button>
+                
+                <div class="bg-slate-950/60 p-3 border border-slate-800 rounded-xl">
+                    <p class="text-[9px] text-gray-500 italic font-medium" id="expert-builder-quote">"Always remember to install the motherboard input/output shield before screwing the actual PCB board down!" — Master Builder Tip</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- USER AUTHENTICATION SCREEN -->
+    <div id="page-auth" class="page-view flex-1 flex items-center justify-center p-6 hidden">
+        <div class="bg-slate-900 border border-slate-800 p-6 rounded-xl w-full max-w-sm shadow-2xl">
+            <h3 id="auth-title" class="text-lg font-bold text-white text-center mb-1">Welcome Operator</h3>
+            <p id="auth-subtitle" class="text-gray-400 text-[11px] text-center mb-4">Access custom account parameters to save layout sheets</p>
+            
+            <form onsubmit="handleUserAuthentication(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Username</label>
+                    <input type="text" id="auth-username" required placeholder="JuanBuilder" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Password</label>
+                    <input type="password" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500">
+                </div>
+                <button type="submit" id="auth-submit-btn" class="w-full py-2 bg-blue-500 hover:bg-blue-400 text-slate-950 font-bold rounded-lg text-xs transition-all mt-1">
+                    Login
+                </button>
+            </form>
+            <p class="text-center text-xs text-gray-400 mt-4">
+                <span id="auth-switch-prompt">Don't have an account?</span>
+                <button onclick="toggleAuthMode()" class="text-blue-400 hover:underline font-semibold ml-0.5">Switch Mode</button>
+            </p>
+        </div>
+    </div>
+
+    <!-- PRE-MADE BLUEPRINTS SCREEN -->
+    <div id="page-guide" class="page-view flex-1 max-w-4xl mx-auto w-full p-6 hidden">
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-6">
+            <h2 class="text-xl font-bold text-white mb-1">📋 Pre-made System Assembly Blueprints</h2>
+            <p class="text-xs text-gray-400 mb-6">Select a balanced preset blueprint option to automatically fill out your layout map.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-slate-950 p-4 border border-slate-800 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-blue-400 text-sm">Budget Esport Blueprint</h4>
+                        <p class="text-gray-400 text-xs mt-1">Perfect for Valorant, Dota 2, and school work using dependable, affordable parts.</p>
+                    </div>
+                    <button onclick="loadPresetBlueprint('entry')" class="w-full mt-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg transition-all">Load Preset</button>
+                </div>
+                <div class="bg-slate-950 p-4 border border-slate-800 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-emerald-400 text-sm">Balanced 1440p Gaming</h4>
+                        <p class="text-gray-400 text-xs mt-1">The sweet-spot for modern performance gaming without overspending.</p>
+                    </div>
+                    <button onclick="loadPresetBlueprint('mid')" class="w-full mt-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg transition-all">Load Preset</button>
+                </div>
+                <div class="bg-slate-950 p-4 border border-slate-800 rounded-xl flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-purple-400 text-sm">Extreme Dream Machine</h4>
+                        <p class="text-gray-400 text-xs mt-1">Top-tier hardware configurations mapping max settings across high 4K resolution frames.</p>
+                    </div>
+                    <button onclick="loadPresetBlueprint('dream')" class="w-full mt-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg transition-all">Load Preset</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- INVOICE QUOTE MODAL BOX -->
+    <div id="quote-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-xl overflow-hidden p-5 shadow-2xl text-left">
+            <h3 class="text-base font-bold text-white border-b border-slate-800 pb-2 mb-3 flex items-center gap-2">📄 Generated System Price Sheet</h3>
+            <p class="text-gray-400 text-xs mb-3">Take a screenshot or print this part sheet list to reference straight at any local Gilmore retail counter:</p>
+            <textarea id="quote-text-area" readonly class="w-full h-56 bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-emerald-400 focus:outline-none"></textarea>
+            <button onclick="document.getElementById('quote-modal').classList.add('hidden')" class="w-full mt-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg transition-all">Close Layout Box</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
